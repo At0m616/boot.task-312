@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New user</title>
+</head>
+<body>
+<h2>Add new user</h2>
+
+<form th:method="POST" th:action="@{/registration}" th:object="${user}">
+    <label for="username" >Enter username: </label>
+    <br>
+    <input type="text" placeholder="Username" th:field="*{username}" id="username" required/>
+<!--    <div style="color:darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</div>-->
+    <br>
+    <label for="password">Enter password: </label>
+    <br>
+    <input type="password" placeholder="Password" th:field="*{password}" id="password" required/>
+<!--    <div style="color:darkred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>-->
+    <br>
+    <label>Enter role: </label>
+    <br>
+    <input type=checkbox id=adminId name=roles value="1">
+    <label for="adminId">Admin</label>
+    <input type=checkbox id=userId name=roles value="2">
+    <label for="userId">User</label>
+    <br><br>
+
+    <input type="submit" value="Create!"/>
+</form>
+<!--<div th:if="${#fields.hasErrors()}">-->
+<!--    <a style="color:darkred">Invalid username/password</a>-->
+<!--</div>-->
+<br>
+<a th:href="@{/}">Back to Index</a>
+<br>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All Users</title>
+</head>
+<body>
+<h2> Admin Page </h2>
+<br>
+<div>
+    <a th:href="@{/admin/new-user}">Add Contact</a> |
+    <a th:href="@{/}">Back to Index</a> |
+    <a th:href="@{/logout}">Logout</a>
+</div>
+<br/><br/>
+<table border="3">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Password</th>
+        <th>Role</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+
+    <tr th:each="usr : ${listU}">
+        <td th:utext="${usr.id}"></td>
+        <td><a th:href="@{/admin/{id}(id=${usr.id})}" th:utext="${usr.username}">...</a></td>
+        <td><a th:href="@{/admin/{id}(id=${usr.id})}" th:utext="${usr.password}">...</a></td>
+        <td th:utext="${usr.roles}"></td>
+        <td><form th:action="@{/admin/{userId}/edit(userId=${usr.id})}">
+            <input type="submit" value="edit"/>
+        </form></td>
+        <td><form th:method="DELETE" th:action="@{/admin/{userId}/delete(userId=${usr.id})}">
+            <input type="submit" value="delete"/>
+        </form></td>
+    </tr>
+</table>
+
+</body>
+</html>
