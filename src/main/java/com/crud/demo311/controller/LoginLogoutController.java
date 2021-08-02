@@ -21,8 +21,4 @@ public class LoginLogoutController {
         return "redirect:/";
     }
 
-    @GetMapping("/error")
-    public String error() {
-        return "redirect:/";
-    }
 }

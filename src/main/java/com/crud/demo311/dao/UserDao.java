@@ -2,19 +2,24 @@ package com.crud.demo311.dao;
 
 
 import com.crud.demo311.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface UserDao {
-    void addUser(User user);
+@Repository
+public interface UserDao extends JpaRepository<User, Long> {
 
-    User getUserById(long id);
 
-    User getUserByName(String name);
+    @Query("select distinct u from User u JOIN FETCH u.roles where u.id = :id")
+    User findUserById(long id);
 
-    List<User> getAllUsers();
+    @Query("select distinct u from User u JOIN FETCH u.roles where u.username =:name")
+    User findUserByUsername(String name);
 
-    void updateUser(User user);
+    @Query("select distinct u from User u join fetch u.roles")
+    List<User> findAllUsers();
 
-    void removeUser(long id);
+    void deleteById(long id);
 }

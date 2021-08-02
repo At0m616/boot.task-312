@@ -32,40 +32,40 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User addUser(User user, Long[] roles) {
-        User userFindDB = userDao.getUserByName(user.getUsername());
+        User userFindDB = userDao.findUserByUsername(user.getUsername());
 
         if (userFindDB != null) {
             return userFindDB;
         }
-        if ((roleDao.findRoleById(1L) == null)
-                || (roleDao.findRoleById(2L) == null)) {
-            roleDao.addRoleAdmin();
-            roleDao.addRoleUser();
+        if ((roleDao.findById(1L).isPresent())
+                || (roleDao.findById(2L).isPresent())) {
+            roleDao.save(new Role(1L, "ROLE_ADMIN"));
+            roleDao.save(new Role(2L, "ROLE_USER"));
         }
         Set<Role> role = roleDao.findRolesSetById(roles);
 
         user.setRoles(role);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userDao.addUser(user);
+        userDao.save(user);
         return user;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User getUserById(long id) {
-        return userDao.getUserById(id);
+    public User findUserById(long id) {
+        return userDao.findUserById(id);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User getUserByName(String name) {
-        return userDao.getUserByName(name);
+    public User findUserByName(String name) {
+        return userDao.findUserByUsername(name);
     }
 
     @Transactional
     @Override
     public void updateUser(User user, Long[] roles) {
-        User modifyUser = userDao.getUserById(user.getId());
+        User modifyUser = userDao.findUserById(user.getId());
         modifyUser.setUsername(user.getUsername());
 
         Set<Role> roleSet = roleDao.findRolesSetById(roles);
@@ -74,19 +74,19 @@ public class UserServiceImpl implements UserService {
         if (!user.getPassword().equals(modifyUser.getPassword())) {
             modifyUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        userDao.updateUser(modifyUser);
+        userDao.save(modifyUser);
     }
 
     @Transactional
     @Override
     public void removeUser(long id) {
-        userDao.removeUser(id);
+        userDao.deleteById(id);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+    public List<User> findAllUsers() {
+        return userDao.findAllUsers();
     }
 
 }

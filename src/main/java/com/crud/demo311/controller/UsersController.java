@@ -50,7 +50,7 @@ public class UsersController {
 
     @GetMapping("/userInfo")
     public String userData(Principal principal, Model model) {
-        User user = userService.getUserByName(principal.getName());
+        User user = userService.findUserByName(principal.getName());
         model.addAttribute("user", user);
         return "user-info";
     }

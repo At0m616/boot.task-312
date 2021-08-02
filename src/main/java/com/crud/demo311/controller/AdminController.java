@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
 import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
@@ -31,7 +30,7 @@ public class AdminController {
 
     @GetMapping
     public String getAllUsers(Model model) {
-        List<User> userList =userService.getAllUsers();
+        List<User> userList =userService.findAllUsers();
         userList.sort(Comparator.comparing(User::getUsername));
         model.addAttribute("listU", userList);
         return "admin-page";
@@ -56,7 +55,7 @@ public class AdminController {
 
     @GetMapping("/{id}/edit")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUserById(id);
+        User user = userService.findUserById(id);
         List<Role> roles = roleService.getAllRoles();
         model.addAttribute("getUserById", user);
         for(Role r : roles){
@@ -81,7 +80,7 @@ public class AdminController {
 
     @GetMapping("{id}")
     public String userInfo(@PathVariable("id")int id, Model model){
-        model.addAttribute("user", userService.getUserById(id));
+        model.addAttribute("user", userService.findUserById(id));
         return "user-info";
     }
 }

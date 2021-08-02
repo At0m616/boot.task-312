@@ -5,7 +5,6 @@ import com.crud.demo311.model.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.Set;
 
@@ -21,19 +20,19 @@ public class RoleServiceImpl implements RoleService{
     @Transactional
     @Override
     public Role findRolesById(Long id) {
-        return roleDao.findRoleById(id);
+        return roleDao.findById(id).orElse(null);
     }
 
     @Transactional
     @Override
     public Role findRoleByName(String name) {
-        return roleDao.findRoleByName(name);
+        return roleDao.findRolesByName(name);
     }
 
     @Transactional
     @Override
     public List<Role> getAllRoles() {
-        return roleDao.getAllRoles();
+        return roleDao.findAll();
     }
 
     @Transactional

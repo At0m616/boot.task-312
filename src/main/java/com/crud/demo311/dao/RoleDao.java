@@ -3,23 +3,30 @@ package com.crud.demo311.dao;
 
 import com.crud.demo311.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
-public interface RoleDao  {
+@Repository
+public interface RoleDao extends JpaRepository<Role, Long> {
 
-    void addRoleAdmin();
+    Role findRolesByName(String name);
 
-    void addRoleUser();
+    default Set<Role> findRolesSetById(Long[] id) {
+        Set<Role> roleSet = new HashSet<>();
+        for (Long i : id) {
+            roleSet.add(findById(i).orElse(null));
+        }
+        return roleSet;
+    }
 
-    Role findRoleById(Long id);
+    default Set<Role> findRoleSetByName(String[] names) {
+        Set<Role> roleSet = new HashSet<>();
+        for (String s : names) {
+            roleSet.add(findRolesByName(s));
+        }
+        return roleSet;
+    }
 
-    Set<Role> findRolesSetById(Long[] id);
-
-    Role findRoleByName(String name);
-
-    Set<Role> findRoleSetByName(String[] names);
-
-    List<Role> getAllRoles();
 }
