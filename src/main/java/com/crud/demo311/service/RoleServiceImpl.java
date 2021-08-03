@@ -19,19 +19,25 @@ public class RoleServiceImpl implements RoleService{
 
     @Transactional
     @Override
-    public Role findRolesById(Long id) {
-        return roleDao.findById(id).orElse(null);
+    public void save(Role role) {
+        roleDao.save(role);
     }
 
     @Transactional
     @Override
-    public Role findRoleByName(String name) {
+    public Role findById(Long id) {
+        return roleDao.findById(id).orElseThrow();
+    }
+
+    @Transactional
+    @Override
+    public Role findByName(String name) {
         return roleDao.findRolesByName(name);
     }
 
     @Transactional
     @Override
-    public List<Role> getAllRoles() {
+    public List<Role> findAllRoles() {
         return roleDao.findAll();
     }
 
@@ -42,7 +48,7 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public Set<Role> findRoleSetByName(String[] names) {
+    public Set<Role> findRolesSetByName(String[] names) {
         return roleDao.findRoleSetByName(names);
     }
 }

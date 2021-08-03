@@ -39,7 +39,7 @@ public class AdminController {
     @GetMapping("/new-user")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("listRoles", roleService.getAllRoles());
+        model.addAttribute("listRoles", roleService.findAllRoles());
         return "registration";
     }
     @PostMapping("/new-user")
@@ -49,14 +49,14 @@ public class AdminController {
             return "registration";
         }
 
-        userService.addUser(userForm, rolesId);
+        userService.saveUser(userForm, rolesId);
         return "redirect:/admin";
     }
 
     @GetMapping("/{id}/edit")
     public String editUser(@PathVariable("id") Long id, Model model) {
         User user = userService.findUserById(id);
-        List<Role> roles = roleService.getAllRoles();
+        List<Role> roles = roleService.findAllRoles();
         model.addAttribute("getUserById", user);
         for(Role r : roles){
         System.out.println(user.getRoles().contains(r));
@@ -68,7 +68,7 @@ public class AdminController {
     @PatchMapping("/edit")
     public String updateUser(@ModelAttribute("user") @Valid User user,
                              @RequestParam(required = false, name = "roles") Long[] roles) {
-        userService.updateUser(user, roles);
+        userService.saveUser(user, roles);
         return "redirect:/admin";
     }
 

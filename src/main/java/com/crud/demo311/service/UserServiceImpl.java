@@ -18,36 +18,41 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
 
-    private final RoleDao roleDao;
+    private final RoleService roleService;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserDao userDao, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
-        this.roleDao = roleDao;
+        this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Transactional
     @Override
-    public User addUser(User user, Long[] roles) {
-        User userFindDB = userDao.findUserByUsername(user.getUsername());
+    public void saveUser(User user, Long[] roles) {
+        var userFindDB = userDao.findUserByUsername(user.getUsername());
+        Set<Role> roleSet = roleService.findRolesSetById(roles);
 
+        if ((roleService.findById(1L) == null)
+                || (roleService.findById(2L) == null)) {
+            roleService.save(new Role(1L, "ROLE_ADMIN"));
+            roleService.save(new Role(2L, "ROLE_USER"));
+        }
+        //modify user
         if (userFindDB != null) {
-            return userFindDB;
+            userFindDB.setUsername(user.getUsername());
+            user.setRoles(roleSet);
+            if (!user.getPassword().equals(userFindDB.getPassword())) {
+                userFindDB.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            }
+            userDao.save(userFindDB);
         }
-        if ((roleDao.findById(1L).isPresent())
-                || (roleDao.findById(2L).isPresent())) {
-            roleDao.save(new Role(1L, "ROLE_ADMIN"));
-            roleDao.save(new Role(2L, "ROLE_USER"));
-        }
-        Set<Role> role = roleDao.findRolesSetById(roles);
 
-        user.setRoles(role);
+        user.setRoles(roleSet);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDao.save(user);
-        return user;
     }
 
     @Transactional(readOnly = true)
@@ -62,20 +67,6 @@ public class UserServiceImpl implements UserService {
         return userDao.findUserByUsername(name);
     }
 
-    @Transactional
-    @Override
-    public void updateUser(User user, Long[] roles) {
-        User modifyUser = userDao.findUserById(user.getId());
-        modifyUser.setUsername(user.getUsername());
-
-        Set<Role> roleSet = roleDao.findRolesSetById(roles);
-        modifyUser.setRoles(roleSet);
-
-        if (!user.getPassword().equals(modifyUser.getPassword())) {
-            modifyUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        }
-        userDao.save(modifyUser);
-    }
 
     @Transactional
     @Override

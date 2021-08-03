@@ -32,7 +32,7 @@ public class UsersController {
     @GetMapping("/registration")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("listRoles", roleService.getAllRoles());
+        model.addAttribute("listRoles", roleService.findAllRoles());
         return "registration";
     }
     @PostMapping("/registration")
@@ -42,7 +42,7 @@ public class UsersController {
             return "registration";
         }
 
-        userService.addUser(userForm, rolesId);
+        userService.saveUser(userForm, rolesId);
         return "redirect:/admin";
     }
 
