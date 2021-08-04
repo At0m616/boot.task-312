@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Collection;
@@ -12,17 +14,26 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "z_user",
-        uniqueConstraints = @UniqueConstraint(columnNames = "username"))
+@Table(name = "boot_users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "e_mail"))
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username",unique = true)
-    @Size(min = 2,message = "Минимум 2 символа")
-    @NotBlank(message = "username not empty")
-    private String username;
+    @Column(name = "firstname")
+    private String firstname;
+
+    @Column(name = "lastname")
+    private String lastname;
+
+    @Column(name = "age")
+    @Digits(integer = 150, fraction = 0)
+    private Integer age;
+
+    @Column(name = "e_mail", unique = true)
+    @Email
+    private String email;
 
     @Column(name = "password")
     @Size(min = 3, message = "Минимум 3 символа")
@@ -30,17 +41,24 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "z_user_roles",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "roles_id"))
+    @JoinTable(name = "boot_user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-
-    public User(String username, String password, Set<Role> roles) {
-        this.username = username;
+    public User(Long id, String firstname,
+                String lastname, Integer age, String email,
+                @Size(min = 3, message = "Минимум 3 символа")
+                @NotBlank(message = "password not empty") String password,
+                Set<Role> roles) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.age = age;
+        this.email = email;
         this.password = password;
         this.roles = roles;
     }
@@ -53,13 +71,37 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setUsername(String firstName) {
-        this.username = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -78,9 +120,10 @@ public class User implements UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        return roles;
     }
 
     @Override
@@ -102,29 +145,36 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id.equals(user.id)
-                && username.equals(user.username)
-                && password.equals(user.password)
-                && roles.equals(user.roles);
+        return Objects.equals(id, user.id)
+                && Objects.equals(firstname, user.firstname)
+                && Objects.equals(lastname, user.lastname)
+                && Objects.equals(age, user.age)
+                && Objects.equals(email, user.email)
+                && Objects.equals(password, user.password)
+                && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, roles);
+        return Objects.hash(id, firstname, lastname, age, email, password, roles);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", firstName='" + username + '\'' +
-                ", lastName='" + password + '\'' +
-                ", Email='" + roles + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }

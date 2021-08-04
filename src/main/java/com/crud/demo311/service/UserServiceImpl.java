@@ -1,6 +1,5 @@
 package com.crud.demo311.service;
 
-import com.crud.demo311.dao.RoleDao;
 import com.crud.demo311.dao.UserDao;
 import com.crud.demo311.model.Role;
 import com.crud.demo311.model.User;
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void saveUser(User user, Long[] roles) {
-        var userFindDB = userDao.findUserByUsername(user.getUsername());
+        var userFindDB = userDao.findUserByEmail(user.getUsername());
         Set<Role> roleSet = roleService.findRolesSetById(roles);
 
         if ((roleService.findById(1L) == null)
@@ -40,9 +39,12 @@ public class UserServiceImpl implements UserService {
             roleService.save(new Role(1L, "ROLE_ADMIN"));
             roleService.save(new Role(2L, "ROLE_USER"));
         }
-        //modify user
+
         if (userFindDB != null) {
-            userFindDB.setUsername(user.getUsername());
+            userFindDB.setFirstname(user.getFirstname());
+            userFindDB.setLastname(user.getLastname());
+            userFindDB.setAge(user.getAge());
+            userFindDB.setEmail(user.getUsername());
             user.setRoles(roleSet);
             if (!user.getPassword().equals(userFindDB.getPassword())) {
                 userFindDB.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -63,8 +65,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public User findUserByName(String name) {
-        return userDao.findUserByUsername(name);
+    public User findUserByEmail(String name) {
+        return userDao.findUserByEmail(name);
     }
 
 

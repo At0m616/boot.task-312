@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "z_roles")
+@Table(name = "boot_roles")
 public class Role implements GrantedAuthority {
     @Id
     private Long id;
