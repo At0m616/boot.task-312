@@ -48,7 +48,7 @@ public class UsersController {
 
 
 
-    @GetMapping("/userInfo")
+    @GetMapping("/user")
     public String userData(Principal principal, Model model) {
         User user = userService.findUserByEmail(principal.getName());
         model.addAttribute("user", user);

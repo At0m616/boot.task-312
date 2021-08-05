@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,7 +30,10 @@ public class AdminController {
     }
 
     @GetMapping
-    public String getAllUsers(Model model) {
+    public String getAllUsers(Principal principal, Model model) {
+        User loginUser = userService.findUserByEmail(principal.getName());
+        model.addAttribute("loginUser", loginUser);
+
         List<User> userList =userService.findAllUsers();
         userList.sort(Comparator.comparing(User::getUsername));
         model.addAttribute("listU", userList);

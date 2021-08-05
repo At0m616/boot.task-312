@@ -33,7 +33,7 @@ public class User implements UserDetails {
 
     @Column(name = "e_mail", unique = true)
     @Email
-    private String email;
+    private String username;
 
     @Column(name = "password")
     @Size(min = 3, message = "Минимум 3 символа")
@@ -50,7 +50,7 @@ public class User implements UserDetails {
     }
 
     public User(Long id, String firstname,
-                String lastname, Integer age, String email,
+                String lastname, Integer age, String username,
                 @Size(min = 3, message = "Минимум 3 символа")
                 @NotBlank(message = "password not empty") String password,
                 Set<Role> roles) {
@@ -58,7 +58,7 @@ public class User implements UserDetails {
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
-        this.email = email;
+        this.username = username;
         this.password = password;
         this.roles = roles;
     }
@@ -97,11 +97,11 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     @Override
@@ -155,14 +155,14 @@ public class User implements UserDetails {
                 && Objects.equals(firstname, user.firstname)
                 && Objects.equals(lastname, user.lastname)
                 && Objects.equals(age, user.age)
-                && Objects.equals(email, user.email)
+                && Objects.equals(username, user.username)
                 && Objects.equals(password, user.password)
                 && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstname, lastname, age, email, password, roles);
+        return Objects.hash(id, firstname, lastname, age, username, password, roles);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class User implements UserDetails {
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", age=" + age +
-                ", email='" + email + '\'' +
+                ", email='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';

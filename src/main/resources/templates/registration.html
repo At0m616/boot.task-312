@@ -8,15 +8,27 @@
 <h2>Add new user</h2>
 
 <form th:method="POST" th:action="@{/registration}" th:object="${user}">
-    <label for="username" >Enter username: </label>
+    <label for="Email" >Enter Email: </label>
     <br>
-    <input type="text" placeholder="Username" th:field="*{username}" id="username" required/>
+    <input type="text" placeholder="Email" th:field="*{username}" id="Email" required/>
 <!--    <div style="color:darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</div>-->
     <br>
     <label for="password">Enter password: </label>
     <br>
     <input type="password" placeholder="Password" th:field="*{password}" id="password" required/>
 <!--    <div style="color:darkred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>-->
+    <br>
+    <label for="firstname">Enter firstname: </label>
+    <br>
+    <input type="text" placeholder="firstname" th:field="*{firstname}" id="firstname" required/>
+    <br>
+    <label for="lastname">Enter lastname: </label>
+    <br>
+    <input type="text" placeholder="lastname" th:field="*{lastname}" id="lastname" required/>
+    <br>
+    <label for="age">Enter age: </label>
+    <br>
+    <input type="number" placeholder="age" th:field="*{age}" id="age" required/>
     <br>
     <label>Enter role: </label>
     <br>

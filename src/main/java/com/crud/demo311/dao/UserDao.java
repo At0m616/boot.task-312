@@ -15,11 +15,13 @@ public interface UserDao extends JpaRepository<User, Long> {
     @Query("select distinct u from User u JOIN FETCH u.roles where u.id = :id")
     User findUserById(long id);
 
-    @Query("select distinct u from User u JOIN FETCH u.roles where u.email =:email")
-    User findUserByEmail(String email);
+    @Query("select distinct u from User u JOIN FETCH u.roles where u.username =:username")
+    User findUserByUsername(String username);
+//
+//    @Query("select distinct u from User u join fetch u.roles")
+//    List<User> findAllUsers();
 
-    @Query("select distinct u from User u join fetch u.roles")
-    List<User> findAllUsers();
+
 
     void deleteById(long id);
 }

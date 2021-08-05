@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void saveUser(User user, Long[] roles) {
-        var userFindDB = userDao.findUserByEmail(user.getUsername());
+        var userFindDB = userDao.findUserByUsername(user.getUsername());
         Set<Role> roleSet = roleService.findRolesSetById(roles);
 
         if ((roleService.findById(1L) == null)
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
             userFindDB.setFirstname(user.getFirstname());
             userFindDB.setLastname(user.getLastname());
             userFindDB.setAge(user.getAge());
-            userFindDB.setEmail(user.getUsername());
+            userFindDB.setUsername(user.getUsername());
             user.setRoles(roleSet);
             if (!user.getPassword().equals(userFindDB.getPassword())) {
                 userFindDB.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public User findUserByEmail(String name) {
-        return userDao.findUserByEmail(name);
+        return userDao.findUserByUsername(name);
     }
 
 
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<User> findAllUsers() {
-        return userDao.findAllUsers();
+        return userDao.findAll();
     }
 
 }
