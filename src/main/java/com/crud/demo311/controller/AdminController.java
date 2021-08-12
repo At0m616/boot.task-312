@@ -5,6 +5,9 @@ import com.crud.demo311.model.User;
 import com.crud.demo311.service.RoleService;
 import com.crud.demo311.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -30,34 +36,39 @@ public class AdminController {
     }
 
     @GetMapping
-    public String getAllUsers(Principal principal, Model model) {
-        User loginUser = userService.findUserByEmail(principal.getName());
-        model.addAttribute("loginUser", loginUser);
+    public String getAllUsers(Principal principal, Model model, @AuthenticationPrincipal User user) {
+//        User loginUser = userService.findUserByEmail(principal.getName());
+//        model.addAttribute("loginUser", loginUser);
 
+        model.addAttribute("listRoles", roleService.findAllRoles());
         List<User> userList =userService.findAllUsers();
         userList.sort(Comparator.comparing(User::getUsername));
         model.addAttribute("listU", userList);
+
+        model.addAttribute("user", user);
+        model.addAttribute("newUser", new User());
         return "admin-page";
     }
 
-    @GetMapping("/new-user")
-    public String newUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("listRoles", roleService.findAllRoles());
-        return "registration";
-    }
-    @PostMapping("/new-user")
-    public String createNewUser(@ModelAttribute("user") @Valid User userForm, BindingResult bindingResult,
+//    @GetMapping("/new-user")
+//    public String newUser(Model model) {
+//
+//        return "registration";
+//    }
+    @PostMapping("/user")
+    public String createNewUser(@ModelAttribute("user") @Valid User userForm,
                                 @RequestParam(required = false, name = "roles") Long[] rolesId) {
-        if (bindingResult.hasErrors()) {
-            return "registration";
+        Set<Role> rolesSet = new HashSet<>();
+        for (long id : rolesId) {
+            rolesSet.add(roleService.findById(id));
         }
+        userForm.setRoles(rolesSet);
 
         userService.saveUser(userForm, rolesId);
         return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
         User user = userService.findUserById(id);
         List<Role> roles = roleService.findAllRoles();
@@ -69,14 +80,14 @@ public class AdminController {
         return "edit";
     }
 
-    @PatchMapping("/edit")
+    @PostMapping("/edit")
     public String updateUser(@ModelAttribute("user") @Valid User user,
                              @RequestParam(required = false, name = "roles") Long[] roles) {
         userService.saveUser(user, roles);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete/{id}")
     public String removeUser(@PathVariable("id") int id) {
         userService.removeUser(id);
         return "redirect:/admin";
