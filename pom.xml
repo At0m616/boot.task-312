@@ -63,6 +63,13 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.4.1.Final</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery -->
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>jquery</artifactId>
+			<version>3.6.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

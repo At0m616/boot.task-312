@@ -29,6 +29,14 @@ public class UsersController {
         this.roleService = roleService;
     }
 
+    @GetMapping("/user")
+    public String userData(Principal principal, Model model) {
+        User user = userService.findUserByEmail(principal.getName());
+        model.addAttribute("user", user);
+        return "user-info";
+    }
+
+
     @GetMapping("/registration")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
@@ -37,7 +45,7 @@ public class UsersController {
     }
     @PostMapping("/registration")
     public String createNewUser(@ModelAttribute("user") @Valid User userForm, BindingResult bindingResult,
-                                @RequestParam(required = false, name = "roles") Long[] rolesId) {
+                                @RequestParam(required = true, name = "roles") Long[] rolesId) {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
@@ -48,11 +56,5 @@ public class UsersController {
 
 
 
-    @GetMapping("/user")
-    public String userData(Principal principal, Model model) {
-        User user = userService.findUserByEmail(principal.getName());
-        model.addAttribute("user", user);
-        return "user-info";
-    }
 
 }
