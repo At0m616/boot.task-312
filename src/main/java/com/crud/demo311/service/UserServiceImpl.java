@@ -64,20 +64,20 @@ public class UserServiceImpl implements UserService {
                 e.printStackTrace();
             }
         }
-        Set<Role> roleSet = roleService.findRolesSetById(roles);
-        user.setRoles(roleSet);
-
         var userFindDB = findUserById(user.getId());
 
+        Set<Role> roleSet = roleService.findRolesSetById(roles);
+        userFindDB.setRoles(roleSet);
         userFindDB.setFirstname(user.getFirstname());
         userFindDB.setLastname(user.getLastname());
         userFindDB.setAge(user.getAge());
         userFindDB.setUsername(user.getUsername());
-        if (!user.getPassword().equals(userFindDB.getPassword())) {
+        if (user.getPassword().equals("") || user.getPassword() == null) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }else {
             userFindDB.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         userDao.save(userFindDB);
-
     }
 
     @Transactional(readOnly = true)
@@ -89,11 +89,11 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public User findUserByEmail(String name) {
-        var u = userDao.findUserByUsername(name);
-        if (u == null) {
+        var userFindDB = userDao.findUserByUsername(name);
+        if (userFindDB == null) {
             throw new UsernameNotFoundException("User not exist");
         }
-        return u;
+        return userFindDB;
     }
 
 

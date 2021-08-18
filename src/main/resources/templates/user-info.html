@@ -24,7 +24,7 @@
     <div>
         <b><a style="color: #eaeaea" th:utext="${user.username}">username</a></b>
         <a style="color: #eaeaea">with roles: </a>
-        <b><a style="color: #eaeaea" th:utext="${user.roles}">roles</a></b>
+        <b><a style="color: #eaeaea" th:utext="${user.roles.toString().replace('[', '').replace(']', '')}">roles</a></b>
     </div>
     <a style="color: darkgray" th:href="@{/logout}">Logout</a>
 </nav>
@@ -38,11 +38,11 @@
             <ul class="list-group">
                 <div sec:authorize="hasRole('ROLE_ADMIN')">
                     <li class="nav-item">
-                        <a href="/admin" class="nav-link active">Admin</a>
+                        <a href="/admin" class="nav-link ">Admin</a>
                     </li>
                 </div>
                 <li class="nav-item">
-                    <a href="/user" class="nav-link">User</a>
+                    <a href="/user" class="nav-link active">User</a>
                 </li>
             </ul>
         </div>
@@ -57,7 +57,7 @@
             <div class="card-block">
                 <table class="table table-hover table-flush">
                     <thead>
-                    <tr style="background-color: #dedede">
+                    <tr style="background-color: #bfbfbf">
                         <th>
                             <p class="h4" valign="center" align="left"> About user </p>
                         </th>
@@ -110,7 +110,6 @@
         </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

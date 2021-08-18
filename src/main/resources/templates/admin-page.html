@@ -25,7 +25,7 @@
     <div>
         <b><a style="color: #eaeaea" th:utext="${user.username}">username</a></b>
         <a style="color: #eaeaea">with roles: </a>
-        <b><a style="color: #eaeaea" th:utext="${user.roles}">roles</a></b>
+        <b><a style="color: #eaeaea" th:utext="${user.roles.toString().replace('[', '').replace(']', '')}">roles</a></b>
     </div>
     <a style="color: darkgray" th:href="@{/logout}">Logout</a>
 </nav>
@@ -51,7 +51,7 @@
                 </li>
             </ul>
             <div sec:authorize="hasRole('ROLE_USER')">
-                <a href="#" class="list-group-item list-group-item-action " th:href="@{/}">Back to Index</a>
+                <a href="#" class="list-group-item list-group-item-action" th:href="@{/}">Back to Index</a>
             </div>
 
         </div>
@@ -79,8 +79,7 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="adminTab" role="tabpanel" aria-labelledby="adminTab">
                         <!-- Первый блок (он отображается по умолчанию, т.к. имеет классы show и active) -->
-<!--                    <div class="container-xl  bg-white  shadow-sm p-3 mb-5 bg-white rounded">-->
-<!--                        <h5 class="d-flex ml-3 mt-1">All users</h5>-->
+
             <div class="card">
                 <div class="card-block">
                     <table class="table table-hover table-flush">
@@ -114,11 +113,10 @@
                                 <td th:text="${user.id}">0</td>
                                 <td><a th:utext="${user.firstname}">a</a></td>
                                 <td><a th:text="${user.lastname}">b</a></td>
-                                <td><a th:href="@{/admin/{id}(id=${user.id})}"
-                                       th:text="${user.username}">...</a>
+                                <td><a th:text="${user.username}">...</a>
                                 </td>
                                 <td><a th:text="${user.age}">...</a></td>
-                                <td th:text="${user.roles}"></td>
+                                <td th:text="${user.roles.toString().replace('[', '').replace(']', '')}"></td>
                                 <td>
                                     <form>
                                         <!-- Button trigger modal -->
@@ -152,8 +150,8 @@
                                             </div>
                                             <div class="modal-body text-center">
 
-                                                <form th:method="post"
-                                                      th:action="@{/admin/edit/{userId}(userId=${user.id})}"
+                                                <form th:method="PATCH"
+                                                      th:action="@{/admin/{userId}(userId=${user.id})}"
                                                       th:object="${user}" th:id="${'EditForm'+ user.id}">
 
                                                     <div class="form-group">
@@ -164,30 +162,34 @@
                                                     <div class="form-group">
                                                         <label for="editFirstName">First name</label>
                                                         <input type="text" class="form-control"
-                                                               name="firstname" id="editFirstName" maxlength="20"
+                                                               name="firstname" id="editFirstName"
+                                                               required maxlength="20"
                                                                th:value="*{firstname}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="editLastName">last name</label>
                                                         <input type="text" class="form-control"
-                                                               name="lastname" id="editLastName" maxlength="20"
+                                                               name="lastname" id="editLastName"
+                                                               required maxlength="20"
                                                                th:value="*{lastname}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="editAge">Age</label>
                                                         <input type="number" class="form-control" id="editAge"
-                                                               name="age" min="1" th:value="*{age}">
+                                                               name="age" min="1" required
+                                                               th:value="*{age}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="editEmail">Email</label>
                                                         <input type="email" class="form-control" id="editEmail"
-                                                                name="username" th:value="*{username}">
+                                                                name="username" required minlength="3"
+                                                               th:value="*{username}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="editPassword">Password</label>
                                                         <input type="password" class="form-control"
-                                                               name="password" id="editPassword" minlength="3"
-                                                               th:value="*{password}">
+                                                               name="password" id="editPassword"
+                                                               value="" placeholder="new password">
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="font-weight-bold"
@@ -237,19 +239,19 @@
                                             <div class="modal-body text-center">
 
                                                 <form th:method="DELETE"
-                                                      th:action="@{/admin/delete/{userId}(userId=${user.id})}"
+                                                      th:action="@{/admin/{userId}(userId=${user.id})}"
                                                       th:object="${user}" th:id="${'DeleteForm'+ user.id}">
 
                                                     <div class="form-group">
                                                         <label for="delId">Id</label>
                                                         <input type="number" class="form-control" id="delId"
-                                                               th:value="${user.id}" readonly>
+                                                               th:value="*{id}" readonly>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="delFirstName">First name</label>
                                                         <input type="text" class="form-control"
                                                                id="delFirstName"
-                                                               th:value="${user.firstname}" readonly>
+                                                               th:value="*{firstname}" readonly>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="delLastName">last name</label>
@@ -266,7 +268,7 @@
                                                         <input type="email" class="form-control" id="delEmail"
                                                                th:value="*{username}" readonly>
                                                     </div>
-                                                    <div class="form-group">
+                                                    <div class="form-group" hidden>
                                                         <label for="delPassword">Password</label>
                                                         <input type="password" class="form-control"
                                                                id="delPassword"

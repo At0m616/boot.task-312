@@ -8,10 +8,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "boot_users",
@@ -177,4 +174,6 @@ public class User implements UserDetails {
                 ", roles=" + roles +
                 '}';
     }
+
 }
+
