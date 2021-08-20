@@ -76,6 +76,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return name.subSequence(5, name.length()).toString().replace('[', ' ').replace(']', ' ');
+        return name.subSequence(5, name.length()).toString();
     }
 }
